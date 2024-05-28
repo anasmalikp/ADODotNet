@@ -35,15 +35,17 @@ namespace ADODotNet.Services
         {
             using (SqlConnection con = new SqlConnection(ConnectionString))
             {
-                SqlCommand cmd = new SqlCommand($"select * from students where id={id} ", con);
                 con.Open();
+                SqlCommand cmd = new SqlCommand("find", con);
+                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@id", id);
                 SqlDataReader reader = cmd.ExecuteReader();
                 Students student = new Students();
-                if (reader.Read())
+                if(reader.Read())
                 {
-                    student.id = Convert.ToInt32(reader["id"]);
-                    student.stud_name = reader["student_name"].ToString();
-                    student.course = reader["course"].ToString();
+                    student.id = (int)reader["id"];
+                    student.stud_name = (string)reader["student_name"];
+                    student.course = (string)reader["course"];
                 }
                 return student;
             }
